@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="YueKa"
+  id="myeclipse.1534122807768"
+  context-root="/YueKa"
+  j2ee-spec="6.0"
+  archive="YueKa.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
