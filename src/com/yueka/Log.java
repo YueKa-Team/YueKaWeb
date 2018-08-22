@@ -3,6 +3,8 @@ package com.yueka;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +18,7 @@ import com.yueka.DBConnection;
 public class Log extends HttpServlet{
 	
 	/**
-	 * 安卓约咖登录服务器端
+	 * 安卓约咖用户登录log
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
@@ -31,11 +33,10 @@ public class Log extends HttpServlet{
 		
 		response.setContentType("text/plain;charset=utf-8");
 		String userid = request.getParameter("userid");
-		String userpwd = request.getParameter("userpwd");
-		System.out.println("userid:" + userid +"登陆");
-		
-		boolean flag = false;
-		
+		String sex = "";
+		String phone = "";
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		String time = df.format(new Date());// new Date()为获取当前系统时间
 		try {
 			response.setCharacterEncoding("utf-8");
 			DBConnection b = new DBConnection();
@@ -43,25 +44,17 @@ public class Log extends HttpServlet{
 			JSONObject obj = new JSONObject();
 			ResultSet rs = b.executeQuery("select * from users where userid ='"+ userid + "'");
 			if(rs.next()){
-				String psd = rs.getString(5);
-				String sex = rs.getString(3);
-				String phone = rs.getString(6);
-				if(psd.equals(userpwd)){
-					obj.put("state", "success");
-					obj.put("usersex", sex);
-					obj.put("userphone", phone);
-					flag = true;
-				}else{
-					obj.put("state", "false");
-				}
+				sex = rs.getString(3);
+				phone = rs.getString(6);
+				obj.put("state", "success");
+				obj.put("sex", sex);
+				obj.put("id", userid);
+				obj.put("phone", phone);
 			}else{
 				obj.put("state", "false");
 			}
-			if(flag){
-				System.out.println("用户登录成功");
-			}else{
-				System.out.println("用户登录失败");
-			}
+			b.execute("insert into log (user,sex,phone,time) values ('" + userid 
+					+ "','" + sex + "','" + phone + "','" + time + "' );");
 			out.print(obj.toString());
 			out.flush();
 			out.close();
@@ -71,6 +64,8 @@ public class Log extends HttpServlet{
 	}
 	 
 	public static void main(String[] args) {
+		
+		
 	}
 
 }
